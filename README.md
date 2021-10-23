@@ -1,20 +1,41 @@
-This is the companion source code repository to my book, ["Generative Art in Go."](https://preslav.me/generative-art-in-golang/) The book is available as an "early access" release on both [Gumroad](https://gumroad.com/l/generative-art-in-golang) and [Leanpub](https://leanpub.com/generative-art-in-golang). While most of the content and surrounding source code are already available, the book is subject to further updates based on readers' feedback. All future updates will be availalble to all exisiting buyers free of charge.
+<p align="center">
+    <a href="https://github.com/jacobsalmela/goart">
+        <img src="https://user-images.githubusercontent.com/3843505/138571722-766c574f-78ed-4c98-88a9-328e95ba6b53.png" width="250" height="250" alt="goart ">
+    </a>
+    <br>
+    <strong>`goart`</strong><br>
+    Generate art on the command line.
+</p>
 
-- [Buy on Gumroad](https://gumroad.com/l/generative-art-in-golang)
-- [Buy on Leanpub](https://leanpub.com/generative-art-in-golang)
+This command-line utility, `goart`, began as a fork of the companion source code to the book, ["Generative Art in Go."](https://preslav.me/generative-art-in-golang/), which intended to introduce novice and experienced programmers to algorithmic art.  It did just that for me, and I decided to convert the code into a command-line utility and being modifying the code to do even more.
 
-# Demo
+```
+$ goart --help
+Generates art using a source image as the starting point.
 
-To see what you will be able to do by the end of the book, make sure to check out this experimental [Web application](https://goart.netlify.app/) I built a couple of weeks ago. It uses WebAssembly to generate beatiful imagery in the browser. And that, using Go code!
-# About the Book
+        The resulting image can be further manipulated with flags to this
+        command.
 
-<img align="left" src="https://d2sofvawe08yqg.cloudfront.net/generative-art-in-golang/hero?1609949259" style="padding-right: 12px" width="33%">
+Usage:
+  goart generate FILE [flags]
 
-Generative Art in Go is a short eBook intended to introduce novice and experienced programmers to algorithmic art, and hopefully, get non-programmers interested in the [Go programming language](https://golang.org/). Unlike popular choices such as [Processing](https://processing.org/), [NodeBox](https://www.nodebox.net/), [openFrameworks](https://openframeworks.cc/), etc., I picked Go for two simple reasons:
+Flags:
+  -A, --alpha-increase float               the step of transparency increase at each iteration (default 0.06)
+  -H, --height int                         height of the generated image (default 2000)
+  -h, --help                               help for generate
+  -a, --initial-alpha float                beginning stroke transparency (default 0.1)
+  -K, --keep-source-dimensions             generate a new image with the same dimensions as the source image (default true)
+  -M, --max-edge int                       maximum stroke will be a n-edge polygon (4 is a square) (default 4)
+  -m, --min-edge int                       minimum stroke will be a n-edge polygon (3 is a triangle) (default 3)
+  -z, --random                             generates a new image using a random one pulled from source.unsplash.com
+  -t, --stroke-inversion-threshold float   the minimum stroke size (default 0.05)
+  -j, --stroke-jitter float                deviation of the colored stroke from its projected position in the original image (default 0.1)
+  -r, --stroke-ratio float                 size of the initial stroke compared to that of the final result (default 0.75)
+  -R, --stroke-reduction float             the initial stroke size gets minimized by this amount on each iteration (default 0.002)
+  -T, --total-cycles int                   Copy any discovered k8s squashfs images from SRC to DEST (default 5000)
+  -W, --width int                          width of the generated image (default 2000)
 
--   Go's syntax is easy enough that virtually anyone can learn it quickly.
--   The language is far more versatile than what most programmers use it for.
-
-Generative art is a unique form of artistic expression, building bridges between computer programming, randomness, and visual aesthetics. It has kept my imagination for over a decade. While I have never been particularly skilled at drawing, I have always been amazed by what one could achieve with a couple of lines of code.
- 
-This book will introduce readers to graphics programming in the Go programming language context through a series of concise examples. It will also guide them in implementing their version of one of my favorite generative art sketches. As a bonus, readers will learn how to turn their command-line sketches into interactive Web applications, using [WebAssembly](https://webassembly.org/) and Web technology's latest standards.
+Global Flags:
+      --config string   config file (default is $HOME/.goart.yaml)
+      --viper           use Viper for configuration (default true)
+```
