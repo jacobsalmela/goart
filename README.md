@@ -1,9 +1,9 @@
 <p align="center">
     <a href="https://github.com/jacobsalmela/goart">
-        <img src="https://user-images.githubusercontent.com/3843505/138571722-766c574f-78ed-4c98-88a9-328e95ba6b53.png" width="250" height="250" alt="goart ">
+        <img src="https://user-images.githubusercontent.com/3843505/138571722-766c574f-78ed-4c98-88a9-328e95ba6b53.png" width="450" height="250" alt="goart ">
     </a>
     <br>
-    <strong>`goart`</strong><br>
+    <strong>goart</strong><br>
     Generate art on the command line.
 </p>
 
