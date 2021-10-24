@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2021 Jacob Salmela <me@jacobsalmela.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
 package cmd
 
 import (
@@ -6,7 +30,6 @@ import (
 	"image/png"
 	"log"
 	"math/rand"
-	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -21,7 +44,7 @@ var (
 	outputImgName                                                                                     string
 	strokeRatio, initialAlpha, strokeReduction, alphaIncrease, strokeInversionThreshold, strokeJitter float64
 	destWidth, destHeight, minEdge, maxEdge, totalCycleCount                                          int
-	keepSourceDimensions, originalDimensions, generateRandomArt                                       bool
+	keepSourceDimensions                                                                              bool
 )
 
 // generateCmd generates a new image from a source image
@@ -46,7 +69,10 @@ var generateCmd = &cobra.Command{
 		outputImgName = filepath.Join(sourceDir, sourceBasename)
 		fmt.Println("Generating...", outputImgName)
 		// Generate the art
-		generateArt(sourceImgName, outputImgName)
+		err := generateArt(sourceImgName, outputImgName)
+		if err != nil {
+			log.Panicln(err)
+		}
 	},
 }
 
@@ -54,9 +80,8 @@ func init() {
 	rootCmd.AddCommand(generateCmd)
 	generateCmd.DisableAutoGenTag = true
 
-	generateCmd.Flags().BoolVarP(&generateRandomArt, "random", "z", false, "generates a new image using a random one pulled from source.unsplash.com")
 	generateCmd.Flags().Float64VarP(&strokeRatio, "stroke-ratio", "r", 0.75, "size of the initial stroke compared to that of the final result")
-	generateCmd.Flags().BoolVarP(&originalDimensions, "keep-source-dimensions", "K", true, "generate a new image with the same dimensions as the source image")
+	generateCmd.Flags().BoolVarP(&keepSourceDimensions, "keep-source-dimensions", "K", true, "generate a new image with the same dimensions as the source image")
 	generateCmd.Flags().IntVarP(&destWidth, "width", "W", 2000, "width of the generated image")
 	generateCmd.Flags().IntVarP(&destHeight, "height", "H", 2000, "height of the generated image")
 	generateCmd.Flags().Float64VarP(&initialAlpha, "initial-alpha", "a", 0.1, "beginning stroke transparency")
@@ -80,7 +105,7 @@ func generateArt(sourcePath string, destPath string) error {
 	}
 
 	// if the user wants to keep the source dimensions,
-	if originalDimensions {
+	if keepSourceDimensions {
 		// set them appropriately
 		destWidth = img.Bounds().Dx()
 		destHeight = img.Bounds().Dy()
@@ -160,22 +185,13 @@ func generateArt(sourcePath string, destPath string) error {
 	}
 
 	// save the sketch once it is generated
-	saveOutput(s.Output(), destPath)
+	err = saveOutput(s.Output(), destPath)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
-}
-
-// loadRandomUnsplashImage loads a random image from unsplash.com
-func loadRandomUnsplashImage(width, height int) (image.Image, error) {
-	url := fmt.Sprintf("https://source.unsplash.com/random/%dx%d", width, height)
-	res, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-
-	img, _, err := image.Decode(res.Body)
-	return img, err
 }
 
 // loadImage loads an image from the given path

@@ -28,5 +28,8 @@ package main
 import "github.com/jacobsalmela/goart/cmd"
 
 func main() {
-	cmd.Execute()
+	err := cmd.Execute()
+	if err != nil {
+		panic(err)
+	}
 }
